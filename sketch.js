@@ -113,11 +113,17 @@ function draw() {
     }
     
     //pular quando a barra de espaço é pressionada
-    if(touches.length > 0 ||keyDown("space")&& trex.y >= canH-40) {
+    if(touches.length > 0 && trex.y >= canH-40) {
         trex.velocityY = -14;
         jumpSound.play();
         touches = []
     }
+    if(keyDown("space")&& trex.y >= canH-40) {
+      trex.velocityY = -14;
+      jumpSound.play();
+      
+  }
+  
     
     //acrescentar gravidade
     trex.velocityY = trex.velocityY + 0.8
