@@ -32,7 +32,7 @@ function preload(){
   
   jumpSound = loadSound("jump.mp3")
   dieSound = loadSound("die.mp3")
-  checkPointSound = loadSound("checkPoint.mp3")
+  checkPointSound = loadSound("checkpoint.mp3")
 }
 
 function setup() {
@@ -40,7 +40,7 @@ function setup() {
   //600 x 200
   
 
-  trex = createSprite(width-550,height-20,20,50);
+  trex = createSprite(width/6-50,height-20,20,50);
   
   trex.addAnimation("running", trex_running);
   trex.addAnimation("collided", trex_collided);
@@ -48,14 +48,14 @@ function setup() {
 
   trex.scale = 0.5;
   
-  ground = createSprite(width/3,height-20,width+50,20);
+  ground = createSprite(width/3,height-20,width-200,20);
   ground.addImage("ground",groundImage);
   ground.x = ground.width /2;
   
   gameOver = createSprite(width/2,height/2);
   gameOver.addImage(gameOverImg);
   
-  restart = createSprite(width/2,height-60);
+  restart = createSprite(width/2,height/2+60);
   restart.addImage(restartImg);
   
   gameOver.scale = 0.5;
