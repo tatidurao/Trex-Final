@@ -11,7 +11,8 @@ var obstaclesGroup, obstacle1, obstacle2, obstacle3, obstacle4, obstacle5, obsta
 var score;
 var gameOverImg,restartImg
 var jumpSound , checkPointSound, dieSound
-
+var canW;
+var canH;
 function preload(){
   trex_running = loadAnimation("trex1.png","trex3.png","trex4.png");
   trex_collided = loadAnimation("trex_collided.png");
@@ -32,15 +33,24 @@ function preload(){
   
   jumpSound = loadSound("jump.mp3")
   dieSound = loadSound("die.mp3")
-  //checkPointSound = loadSound("checkpoint.mp3")
+  checkPointSound = loadSound("checkpoint.mp3")
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  //600 x 200
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(isMobile){
+    canW = displayWidth; 
+    canH = displayHeight; 
+    createCanvas(displayWidth+80, displayHeight);
+  } 
+  else {
+    canW = windowWidth; 
+    canH = windowHeight; 
+    createCanvas(windowWidth, windowHeight);
+  }
   
 
-  trex = createSprite(width/6-50,height-20,20,50);
+  trex = createSprite(canW/6-50,canH-20,20,50);
   
   trex.addAnimation("running", trex_running);
   trex.addAnimation("collided", trex_collided);
@@ -48,20 +58,20 @@ function setup() {
 
   trex.scale = 0.5;
   
-  ground = createSprite(width/3,height-20,width-200,20);
+  ground = createSprite(canW/3,canH-20,canW-200,20);
   ground.addImage("ground",groundImage);
   ground.x = ground.width /2;
   
-  gameOver = createSprite(width/2,height/2);
+  gameOver = createSprite(canW/2,canH/2);
   gameOver.addImage(gameOverImg);
   
-  restart = createSprite(width/2,height/2+60);
+  restart = createSprite(canW/2,canH/2+60);
   restart.addImage(restartImg);
   
   gameOver.scale = 0.5;
   restart.scale = 0.5;
   
-  invisibleGround = createSprite(width/3,height-10,width,10);
+  invisibleGround = createSprite(canW/3,canH-10,canW,10);
   invisibleGround.visible = false;
   
   //criar Grupos de Obstáculos e Nuvens
@@ -80,7 +90,7 @@ function draw() {
   
   background(180);
   //exibir pontuação
-  text("Pontuação: "+ score, width-100,height/4);
+  text("Pontuação: "+ score, canW-100,canH/4);
   
   
   if(gameState === PLAY){
@@ -90,12 +100,12 @@ function draw() {
     //mudar a animação do trex
       trex.changeAnimation("running", trex_running);
     
-    ground.velocityX = -(4 + 3* score/100)
+    ground.velocityX = -(5 + score/100)
     //pontuação
     score = score + Math.round(frameRate()/60);
     
     if(score>0 && score%100 === 0){
-       //checkPointSound.play() 
+       checkPointSound.play() 
     }
     
     if (ground.x < 0){
@@ -103,8 +113,8 @@ function draw() {
     }
     
     //pular quando a barra de espaço é pressionada
-    if(touches.length > 0 ||keyDown("space")&& trex.y >= height-40) {
-        trex.velocityY = -12;
+    if(touches.length > 0 ||keyDown("space")&& trex.y >= canH-40) {
+        trex.velocityY = -14;
         jumpSound.play();
         touches = []
     }
@@ -175,8 +185,8 @@ function reset(){
 
 function spawnObstacles(){
  if (frameCount % 60 === 0){
-   var obstacle = createSprite(width,height -35,10,40);
-   obstacle.velocityX = -(6 + score/100);
+   var obstacle = createSprite(canW,canH -35,10,40);
+   obstacle.velocityX = -(5 + score/100);
    
     //gerar obstáculos aleatórios
     var rand = Math.round(random(1,6));
@@ -198,7 +208,7 @@ function spawnObstacles(){
    
     //atribuir escala e tempo de vida ao obstáculo           
     obstacle.scale = 0.5;
-    obstacle.lifetime = width/6;
+    obstacle.lifetime = canW/6;
    
    //acrescentar cada obstáculo ao grupo
     obstaclesGroup.add(obstacle);
@@ -208,14 +218,14 @@ function spawnObstacles(){
 function spawnClouds() {
   //escreva o código aqui para gerar as nuvens
  if (frameCount % 60 === 0) {
-    var cloud = createSprite(width,height-80,40,10);
+    var cloud = createSprite(canW,canH-80,40,10);
     cloud.y = Math.round(random(80,120));
     cloud.addImage(cloudImage);
     cloud.scale = 0.5;
     cloud.velocityX = -3;
     
      //atribuir o tempo de vida da variável
-    cloud.lifetime = width/3;
+    cloud.lifetime = canW/3;
     
     //ajuste a profundidade
     cloud.depth = trex.depth;
